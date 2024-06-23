@@ -1,6 +1,5 @@
 const query = require("../config/db")
 const axios = require('axios');
-const sdk = require('@api/dev-hub');
 
 // get all deleted vehicles
 
@@ -61,6 +60,8 @@ const engineOnSendMessage = async (req, res) => {
             phone,
             model
         } = req.body;
+        console.log(model)
+        console.log(phone)
         const smsCommandsQuery = `SELECT * FROM sms_commands`;
         const smscommandsresult = await query(smsCommandsQuery);
         let smsmessage = '';
@@ -80,33 +81,53 @@ const engineOnSendMessage = async (req, res) => {
         }
 
         if (phone.length > 11) {
-            sdk.auth('redahashim2020@yahoo.com', '561009599');
-            sdk.postAccessTokenPOST({
+            const options = {
+                method: 'POST',
+                url: 'https://api.1nce.com/management-api/oauth/token',
+                headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json',
+                    authorization: 'Basic cmVkYWhhc2hpbTIwMjBAeWFob28uY29tOjU2MTAwOTU5OQ=='
+                },
+                data: {
                     grant_type: 'client_credentials'
-                })
-                .then(({
-                    data
-                }) => {
-                    sdk.auth(data.access_token);
-                    sdk.sendSmsToSimUsingPOST(`{"payload":${smsmessage}, "source_address":"ClickLife","expiry_date":"2018-03-14T16:10:29.000+0000"}`, {
-                            iccid: phone,
-                            'content-type': 'application/json;charset=UTF-8'
-                        })
-                        .then(response => {
-                            console.log('Response: ', response);
-                            res.status(200).send({
-                                success: true,
-                                response: response,
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error: ', error);
-                            res.status(500).send({
-                                success: false,
-                                message: error.message,
-                            });
+                }
+            };
+            axios.request(options)
+                .then(function (response) {
+                    console.log(response.data.access_token);
+                    const options = {
+                        method: 'POST',
+                        url: `https://api.1nce.com/management-api/v1/sims/${phone}/sms`,
+                        headers: {
+                          accept: 'application/json',
+                          'content-type': 'application/json;charset=UTF-8',
+                          authorization: `Bearer ${response.data.access_token}`
+                        },
+                        data: `{"payload":${smsmessage},"source_address":"ClickLife"}`
+                      };
+                      axios.request(options)
+                        .then(function (response) {
+                          console.log(response.data);
+                          res.status(200).send({
+                            success: true,
+                            response: response.data,
                         });
-                }).catch(err => console.error(err));
+                        }).catch(function (error) {
+                          console.error(error);
+                          res.status(500).send({
+                            success: false,
+                            message: error.message,
+                        });
+                        });
+                })
+                .catch(function (error) {
+                    console.error(error);
+                    res.status(500).send({
+                        success: false,
+                        message: error.message,
+                    });
+                });
         } else {
             // Prepare the data in the required format
             const smsData = [{
@@ -169,33 +190,53 @@ const engineOffSendMessage = async (req, res) => {
         }
 
         if (phone.length > 11) {
-            sdk.auth('redahashim2020@yahoo.com', '561009599');
-            sdk.postAccessTokenPOST({
+            const options = {
+                method: 'POST',
+                url: 'https://api.1nce.com/management-api/oauth/token',
+                headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json',
+                    authorization: 'Basic cmVkYWhhc2hpbTIwMjBAeWFob28uY29tOjU2MTAwOTU5OQ=='
+                },
+                data: {
                     grant_type: 'client_credentials'
-                })
-                .then(({
-                    data
-                }) => {
-                    sdk.auth(data.access_token);
-                    sdk.sendSmsToSimUsingPOST(`{"payload":${smsmessage}, "source_address":"ClickLife","expiry_date":"2018-03-14T16:10:29.000+0000"}`, {
-                            iccid: phone,
-                            'content-type': 'application/json;charset=UTF-8'
-                        })
-                        .then(response => {
-                            console.log('Response: ', response);
-                            res.status(200).send({
-                                success: true,
-                                response: response,
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error: ', error);
-                            res.status(500).send({
-                                success: false,
-                                message: error.message,
-                            });
+                }
+            };
+            axios.request(options)
+                .then(function (response) {
+                    console.log(response.data.access_token);
+                    const options = {
+                        method: 'POST',
+                        url: `https://api.1nce.com/management-api/v1/sims/${phone}/sms`,
+                        headers: {
+                          accept: 'application/json',
+                          'content-type': 'application/json;charset=UTF-8',
+                          authorization: `Bearer ${response.data.access_token}`
+                        },
+                        data: `{"payload":${smsmessage},"source_address":"ClickLife"}`
+                      };
+                      axios.request(options)
+                        .then(function (response) {
+                          console.log(response.data);
+                          res.status(200).send({
+                            success: true,
+                            response: response.data,
                         });
-                }).catch(err => console.error(err));
+                        }).catch(function (error) {
+                          console.error(error);
+                          res.status(500).send({
+                            success: false,
+                            message: error.message,
+                        });
+                        });
+                })
+                .catch(function (error) {
+                    console.error(error);
+                    res.status(500).send({
+                        success: false,
+                        message: error.message,
+                    });
+                });
         } else {
             // Prepare the data in the required format
             const smsData = [{
