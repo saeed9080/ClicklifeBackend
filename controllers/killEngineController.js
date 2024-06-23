@@ -95,7 +95,6 @@ const engineOnSendMessage = async (req, res) => {
             };
             axios.request(options)
                 .then(function (response) {
-                    console.log(response.data.access_token);
                     const options = {
                         method: 'POST',
                         url: `https://api.1nce.com/management-api/v1/sims/${phone}/sms`,
@@ -104,17 +103,15 @@ const engineOnSendMessage = async (req, res) => {
                           'content-type': 'application/json;charset=UTF-8',
                           authorization: `Bearer ${response.data.access_token}`
                         },
-                        data: `{"payload":${smsmessage},"source_address":"ClickLife"}`
+                        data: `{"payload": "${smsmessage}","source_address":"ClickLife"}`
                       };
                       axios.request(options)
                         .then(function (response) {
-                          console.log(response.data);
                           res.status(200).send({
                             success: true,
-                            response: response.data,
+                            response: response.statusText,
                         });
                         }).catch(function (error) {
-                          console.error(error);
                           res.status(500).send({
                             success: false,
                             message: error.message,
@@ -122,7 +119,6 @@ const engineOnSendMessage = async (req, res) => {
                         });
                 })
                 .catch(function (error) {
-                    console.error(error);
                     res.status(500).send({
                         success: false,
                         message: error.message,
@@ -204,7 +200,6 @@ const engineOffSendMessage = async (req, res) => {
             };
             axios.request(options)
                 .then(function (response) {
-                    console.log(response.data.access_token);
                     const options = {
                         method: 'POST',
                         url: `https://api.1nce.com/management-api/v1/sims/${phone}/sms`,
@@ -217,13 +212,11 @@ const engineOffSendMessage = async (req, res) => {
                       };
                       axios.request(options)
                         .then(function (response) {
-                          console.log(response.data);
                           res.status(200).send({
                             success: true,
-                            response: response.data,
+                            response: response.statusText,
                         });
                         }).catch(function (error) {
-                          console.error(error);
                           res.status(500).send({
                             success: false,
                             message: error.message,
