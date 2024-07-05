@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllVehicles, getClientData, searchController } = require("../controllers/financeController");
+const { getAllVehicles, getClientData, searchController, generatePDFController } = require("../controllers/financeController");
 
 // express router
 const router = express.Router();
@@ -9,5 +9,7 @@ router.get("/get-all-vehicles" ,getAllVehicles);
 router.post("/get-client-data",  getClientData );
 //search
 router.post("/search",  searchController );
+//generate-pdf
+router.post("/generate-pdf",  generatePDFController );
 
 module.exports = router;

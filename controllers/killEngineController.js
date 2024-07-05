@@ -58,7 +58,9 @@ const engineOnSendMessage = async (req, res) => {
     try {
         const {
             phone,
-            model
+            model,
+            Vehicle_Label,
+            Client
         } = req.body;
         console.log(model)
         console.log(phone)
@@ -80,7 +82,17 @@ const engineOnSendMessage = async (req, res) => {
             return;
         }
 
+        // Get current date and time in local time zone
+        const date = new Date();
+        const datePart = date.toISOString().split('T')[0];
         if (phone.length > 11) {
+            // sma data
+            const smsreport = {
+                client: Client,
+                description: `${Vehicle_Label} is engine on`,
+                date: datePart
+            }
+            await query("INSERT INTO sms_report SET ?", smsreport);
             const options = {
                 method: 'POST',
                 url: 'https://api.1nce.com/management-api/oauth/token',
@@ -99,23 +111,23 @@ const engineOnSendMessage = async (req, res) => {
                         method: 'POST',
                         url: `https://api.1nce.com/management-api/v1/sims/${phone}/sms`,
                         headers: {
-                          accept: 'application/json',
-                          'content-type': 'application/json;charset=UTF-8',
-                          authorization: `Bearer ${response.data.access_token}`
+                            accept: 'application/json',
+                            'content-type': 'application/json;charset=UTF-8',
+                            authorization: `Bearer ${response.data.access_token}`
                         },
                         data: `{"payload": "${smsmessage}","source_address":"ClickLife"}`
-                      };
-                      axios.request(options)
+                    };
+                    axios.request(options)
                         .then(function (response) {
-                          res.status(200).send({
-                            success: true,
-                            response: response.statusText,
-                        });
+                            res.status(200).send({
+                                success: true,
+                                response: response.statusText,
+                            });
                         }).catch(function (error) {
-                          res.status(500).send({
-                            success: false,
-                            message: error.message,
-                        });
+                            res.status(500).send({
+                                success: false,
+                                message: error.message,
+                            });
                         });
                 })
                 .catch(function (error) {
@@ -125,6 +137,13 @@ const engineOnSendMessage = async (req, res) => {
                     });
                 });
         } else {
+            // sma data
+            const smsreport = {
+                client: Client,
+                description: `${Vehicle_Label} is engine on`,
+                date: datePart
+            }
+            await query("INSERT INTO sms_report SET ?", smsreport);
             // Prepare the data in the required format
             const smsData = [{
                 user: '20099576', // Replace with your profile ID
@@ -164,7 +183,9 @@ const engineOffSendMessage = async (req, res) => {
     try {
         const {
             phone,
-            model
+            model,
+            Vehicle_Label,
+            Client
         } = req.body;
         console.log(model)
         const smsCommandsQuery = `SELECT * FROM sms_commands`;
@@ -184,8 +205,17 @@ const engineOffSendMessage = async (req, res) => {
             });
             return;
         }
-
+        // Get current date and time in local time zone
+        const date = new Date();
+        const datePart = date.toISOString().split('T')[0];
         if (phone.length > 11) {
+            // sma data
+            const smsreport = {
+                client: Client,
+                description: `${Vehicle_Label} is kill engine`,
+                date: datePart
+            }
+            await query("INSERT INTO sms_report SET ?", smsreport);
             const options = {
                 method: 'POST',
                 url: 'https://api.1nce.com/management-api/oauth/token',
@@ -204,23 +234,23 @@ const engineOffSendMessage = async (req, res) => {
                         method: 'POST',
                         url: `https://api.1nce.com/management-api/v1/sims/${phone}/sms`,
                         headers: {
-                          accept: 'application/json',
-                          'content-type': 'application/json;charset=UTF-8',
-                          authorization: `Bearer ${response.data.access_token}`
+                            accept: 'application/json',
+                            'content-type': 'application/json;charset=UTF-8',
+                            authorization: `Bearer ${response.data.access_token}`
                         },
                         data: `{"payload":${smsmessage},"source_address":"ClickLife"}`
-                      };
-                      axios.request(options)
+                    };
+                    axios.request(options)
                         .then(function (response) {
-                          res.status(200).send({
-                            success: true,
-                            response: response.statusText,
-                        });
+                            res.status(200).send({
+                                success: true,
+                                response: response.statusText,
+                            });
                         }).catch(function (error) {
-                          res.status(500).send({
-                            success: false,
-                            message: error.message,
-                        });
+                            res.status(500).send({
+                                success: false,
+                                message: error.message,
+                            });
                         });
                 })
                 .catch(function (error) {
@@ -231,6 +261,13 @@ const engineOffSendMessage = async (req, res) => {
                     });
                 });
         } else {
+            // sma data
+            const smsreport = {
+                client: Client,
+                description: `${Vehicle_Label} is kill engine`,
+                date: datePart
+            }
+            await query("INSERT INTO sms_report SET ?", smsreport);
             // Prepare the data in the required format
             const smsData = [{
                 user: '20099576', // Replace with your profile ID

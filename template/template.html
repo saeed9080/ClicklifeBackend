@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    h3 { color: #333; }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      table-layout: fixed;
+      word-wrap: break-word;
+    }
+    th, td { 
+      border: 1px solid #ccc; 
+      padding: 4px; 
+      text-align: center;
+      overflow: hidden;
+      font-size: 10px;
+    }
+    th { 
+      background-color: gray; 
+      color: white; 
+      font-weight: bold;
+    }
+    img { 
+      width: 40%; 
+      height: auto; 
+      display: block; 
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <img src="data:image/png;base64,{{imageBase64}}" alt="Company Logo">
+    <h3>{{companyname}}</h3>
+    <h3>{{username}}</h3>
+    <h3>{{currentDate}}</h3>
+    {{data}}
+  </div>
+</body>
+</html>

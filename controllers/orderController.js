@@ -152,7 +152,6 @@ const createOrder = async (req, res) => {
         // Extract device tokens from the result
         // const deviceTokens = userTokensResult.map(user => user.device_token);
         const deviceTokens = userTokensResult.map(user => user.device_token).filter(token => token);
-        console.log("deviceTokens ", deviceTokens);
 
         // Send push notification
         const message = {
@@ -171,6 +170,7 @@ const createOrder = async (req, res) => {
         const timePart = date.toLocaleTimeString('en-US', {
             hour12: false
         });
+        console.log('datePart ',datePart)
         const messageTime = `${datePart} ${timePart}`;
         const timeIn12HourFormat = convertTo12HourFormat(messageTime);
         await admin.messaging().sendEachForMulticast(message);
@@ -190,6 +190,14 @@ Your Service Order with ID: ${orderID}
 Details: ${cars} cars ${description} has been Submitted Successfully.
 Regards, 
 Clicklife Customer Service`;
+
+        // sma data
+        const smsreport = {
+            client: client_for,
+            description: smsmessage,
+            date: datePart
+        }
+        await query("INSERT INTO sms_report SET ?", smsreport);
         
         // Prepare the data in the required format
         const smsData = [
@@ -202,11 +210,9 @@ Clicklife Customer Service`;
             language: 'English', // Language set to English
         }
         ];
-
         // Send the request
         const response = axios.post('https://mshastra.com/sendsms_api_json.aspx', smsData)
         .then(response => {
-            console.log('Response: ',response)
             res.status(200).send({
                 success: true,
                 message: "Create Order Successfully!",
@@ -339,6 +345,14 @@ Your Service Order with ID: ${orderId}
 Details: ${orderNumberOfCars} cars ${selectedOrder} has been Picked up by our Technician ${technician}. Our Technician will be there in 20 Minutes
 Regards, 
 Clicklife Customer Service`;
+
+         // sma data
+         const smsreport = {
+            client: client_for,
+            description: smsmessage,
+            date: datePart
+        }
+        await query("INSERT INTO sms_report SET ?", smsreport);
         
         // Prepare the data in the required format
         const smsData = [
@@ -450,6 +464,14 @@ Details: ${orderCars} cars ${orderDescription} has been Completed Successfully. 
 Regards,
 Clicklife Customer Service`;
         
+        // sma data
+        const smsreport = {
+            client: client_for,
+            description: smsmessage,
+            date: datePart
+        }
+        await query("INSERT INTO sms_report SET ?", smsreport);
+
         // Prepare the data in the required format
         const smsData = [
         {

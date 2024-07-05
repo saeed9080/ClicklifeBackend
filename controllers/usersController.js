@@ -260,7 +260,7 @@ const getUserFromDatabase = async(userId, loginType) => {
         let result;
         if(loginType === 'admin' || loginType === 'staff'){
             result = await query(
-                'SELECT id, email, password, img, country FROM users WHERE id = ?',
+                'SELECT id, email, password, img, country FROM Users WHERE id = ?',
                 [userId]
             );
         }
@@ -350,7 +350,7 @@ const updateUserController = async (req, res) => {
             sql = "UPDATE client SET trade_name = ?, auth_person = ?, auth_phone = ?, city = ?, website = ?, password = ?, address = ?, Phone = ?, img = ? WHERE id = ?";
             params = [trade_name, auth_person, auth_phone, city, website, password, address, Phone, img, userId];
         } else if (loginType === 'admin' || loginType === 'staff') {
-            sql = "UPDATE users SET email = ?, password = ?, img = ?, country = ? WHERE id = ?";
+            sql = "UPDATE Users SET email = ?, password = ?, img = ?, country = ? WHERE id = ?";
             params = [email, password, img, country, userId];
         }
         console.log('SQL: ', sql);

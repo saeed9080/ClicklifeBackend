@@ -16,7 +16,8 @@ require("./config/db");
 
 //middlewares
 app.use(morgan('dev'));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());// cors middleware to prevent errors when trying to access data from different origins
 app.use(cookieParser());
 // Serve static files from the uploads directory
