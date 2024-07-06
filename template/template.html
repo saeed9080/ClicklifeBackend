@@ -2,8 +2,12 @@
 <html>
 <head>
   <style>
-    body { font-family: Arial, sans-serif; }
-    h3 { color: #333; }
+    body { 
+      font-family: Arial, sans-serif; 
+    }
+    h3 { 
+      color: #333; 
+    }
     table { 
       width: 100%; 
       border-collapse: collapse; 
@@ -22,8 +26,8 @@
       color: white; 
       font-weight: bold;
     }
-    img { 
-      width: 40%; 
+    .cropped-image { 
+      width: 30%;
       height: auto; 
       display: block; 
       margin-bottom: 20px;
@@ -32,7 +36,7 @@
 </head>
 <body>
   <div>
-    <img src="data:image/png;base64,{{imageBase64}}" alt="Company Logo">
+    <img class="cropped-image" src="data:image/png;base64,{{imageBase64}}" alt="Company Logo">
     <h3>{{companyname}}</h3>
     <h3>{{username}}</h3>
     <h3>{{currentDate}}</h3>

@@ -56,7 +56,7 @@ const generatePDF = async (data, username) => {
     });
     const messageTime = `${datePart} ${timePart}`;
 
-    const imageBuffer = fs.readFileSync(path.resolve(__dirname, '../images/blacklogo.png'));
+    const imageBuffer = fs.readFileSync(path.resolve(__dirname, '../images/companylogo.png'));
     const imageBase64 = imageBuffer.toString('base64');
   const content = html
     .replace('{{imageBase64}}', imageBase64)
