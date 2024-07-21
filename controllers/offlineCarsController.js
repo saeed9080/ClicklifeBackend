@@ -1,5 +1,5 @@
 const query = require("../config/db")
-
+const offlineCarsGeneratePdf = require('../GeneratedPDF/offlineCarsGeneratePdf');
 // get all vehicles
 
 const getAllVehicles = async (req, res) => {
@@ -49,8 +49,27 @@ const searchController = async (req, res) => {
     }
 };
 
+const generateOfflineCarsPDFController = async (req, res) => {
+    try {
+        const {data, username, loginType} = req.body
+        const pdfBuffer = await offlineCarsGeneratePdf(data, username, loginType);
+        const pdfBase64 = pdfBuffer.toString('base64'); // Convert buffer to base64
+
+        res.status(200).json({
+            success: true,
+            message: "PDF generated successfully!",
+            pdfBase64, // Send the base64 string
+        });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: error.message,
+        });
+    }
+};
 
 module.exports = {
     getAllVehicles,
     searchController,
+    generateOfflineCarsPDFController
 }

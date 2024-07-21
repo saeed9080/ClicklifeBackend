@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllVehicles, getClientData, searchController, generatePDFController } = require("../controllers/financeController");
+const { getAllVehicles, getClientData, searchController, generateVehiclesPDFController, generateAllVehiclesPDFController, unPaidVehiclesController, paidVehiclesController } = require("../controllers/financeController");
 
 // express router
 const router = express.Router();
@@ -9,7 +9,13 @@ router.get("/get-all-vehicles" ,getAllVehicles);
 router.post("/get-client-data",  getClientData );
 //search
 router.post("/search",  searchController );
-//generate-pdf
-router.post("/generate-pdf",  generatePDFController );
+//generate-vehicles-pdf
+router.post("/generate-vehicles-pdf",  generateVehiclesPDFController );
+//generate-allvehicles-pdf
+router.post("/generate-allvehicles-pdf",  generateAllVehiclesPDFController );
+//generate-allvehicles-pdf
+router.post("/unpaid-vehicles",  unPaidVehiclesController );
+//generate-allvehicles-pdf
+router.post("/paid-vehicles",  paidVehiclesController );
 
 module.exports = router;

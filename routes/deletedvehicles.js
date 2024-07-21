@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllDeletedVehicles, searchController } = require("../controllers/deletedVehiclesController");
+const { getAllDeletedVehicles, searchController, generateDeletedVehiclesPDFController,  } = require("../controllers/deletedVehiclesController");
 
 // express router
 const router = express.Router();
@@ -7,5 +7,7 @@ const router = express.Router();
 router.get("/get-all-deleted-vehicles" ,getAllDeletedVehicles);
 //search
 router.post("/search",  searchController );
+//generate-deleted-vehicles-pdf
+router.post("/generate-deleted-vehicles-pdf",  generateDeletedVehiclesPDFController );
 
 module.exports = router;

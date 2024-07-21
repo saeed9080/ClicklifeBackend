@@ -46,7 +46,7 @@ const getAllOrders = async (req, res) => {
 // get client data
 const getClientData = async (req, res) => {
     try {
-        const results = await query("SELECT Namee, Phone FROM client");
+        const results = await query("SELECT Namee, Phone, country FROM client");
         res.status(200).json({
             success: true,
             message: "Get Client Data Successfully!",
@@ -133,9 +133,9 @@ const createOrder = async (req, res) => {
 
         // Fetch device tokens for users
         const userTokensResult = await query(`
-            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department != 'Technician') 
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND department != 'Technician') 
             UNION 
-            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department = 'Technician' AND country = ?) 
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND department = 'Technician' AND country = ?) 
             UNION 
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [country, client_for]);
@@ -289,9 +289,9 @@ const pickOrder = async (req, res) => {
         const result = await query("UPDATE orders SET technician = ?, status = ? WHERE id = ?", [technician, status, orderId]);
         // Fetch device tokens for users
         const userTokensResult = await query(`
-            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department != 'Technician') 
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND department != 'Technician') 
             UNION 
-            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department = 'Technician' AND country = ?) 
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND department = 'Technician' AND country = ?) 
             UNION 
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [Country, client_for]);
@@ -318,6 +318,7 @@ const pickOrder = async (req, res) => {
             },
             tokens: deviceTokens
         };
+        console.log(message)
 
         const messageTitle = message.notification.title;
         const messageBody = message.notification.body;
@@ -406,9 +407,9 @@ const markOrder = async (req, res) => {
         const result = await query("UPDATE orders SET status = ? WHERE id = ?", [status, orderId]);
         // Fetch device tokens for users
         const userTokensResult = await query(`
-            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department != 'Technician') 
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND department != 'Technician') 
             UNION 
-            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department = 'Technician' AND country = ?) 
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND department = 'Technician' AND country = ?) 
             UNION 
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [Country, client_for]);
@@ -506,6 +507,53 @@ Clicklife Customer Service`;
     }
 }
 
+// feedback
+
+const feedbackController = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const {
+            rating,
+            feedback,
+        } = req.body; // Assuming userId is sent in the request body
+
+        // Insert the feedback into the orders table
+        const result = await query("UPDATE orders SET rating = ?, feedback = ? WHERE id = ?", [rating, feedback, orderId]);
+        res.status(200).send({
+            success: true,
+            message: "Feedback submitted!",
+            result,
+        });
+    }catch (error) {
+        res.status(500).send({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+// Get all completed orders that complete in current month for a technician
+
+const currentMonthCompletedOrders = async (req,res) => {
+    try {
+        const {username} = req.body;
+        const result = await query(`SELECT COUNT(*) AS count FROM orders WHERE technician = ? AND status = 2 AND MONTH(solve_date) = MONTH(CURRENT_DATE()) AND YEAR(solve_date) = YEAR(CURRENT_DATE())`, [username]);
+        console.log(result)
+        res.status(200).send({
+            success: true,
+            message: "All completed orders that complete in current month!",
+            result,
+        });
+    }catch (error) {
+        res.status(500).send({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
+
 module.exports = {
     getAllOrders,
     createOrder,
@@ -514,4 +562,8 @@ module.exports = {
     deleteOrder,
     pickOrder,
     markOrder,
+    feedbackController,
+    currentMonthCompletedOrders,
 }
+
+//SELECT COUNT(*) AS count FROM orders WHERE technician = ? AND status = 2 AND MONTH(solve_date) = MONTH(CURRENT_DATE()) AND YEAR(solve_date) = YEAR(CURRENT_DATE());

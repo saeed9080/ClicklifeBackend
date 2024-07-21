@@ -1,5 +1,5 @@
 const query = require("../config/db")
-
+const admin = require('../config/firebaseService');
 // get all complains
 
 const getAllComplains = async (req, res) => {
@@ -20,7 +20,7 @@ const getAllComplains = async (req, res) => {
 // get client data
 const getClientData = async (req, res) => {
     try {
-        const results = await query("SELECT Namee, Phone FROM client");
+        const results = await query("SELECT Namee, Phone, country FROM client");
         res.status(200).json({
             success: true,
             message: "Get Client Data Successfully!",
@@ -39,7 +39,7 @@ const getClientData = async (req, res) => {
 const createComplain = async (req, res) => {
     try {
         const userId = req.params.userId;
-        const { loginType, client, phone, dep_name, description  } = req.body;  // Assuming loginType is passed in the request body
+        const { loginType, client, phone, dep_name, description,country  } = req.body;  // Assuming loginType is passed in the request body
 
         let clientName = null;
 
@@ -83,6 +83,32 @@ const createComplain = async (req, res) => {
 
         // Inserting the order into the orders table
         const result = await query("INSERT INTO complains SET ?", complainData);
+        // Fetch device tokens for users
+        const userTokensResult = await query(`
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND department = ? AND country = ?) 
+            UNION 
+            (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
+            [dep_name, country, client]);
+        console.log("userTokensResult ", userTokensResult);
+        if (userTokensResult.length === 0) {
+            return res.status(404).send({
+                success: false,
+                message: "No users found in the specified id",
+            });
+        }
+        // Extract device tokens from the result
+        // const deviceTokens = userTokensResult.map(user => user.device_token);
+        const deviceTokens = userTokensResult.map(user => user.device_token).filter(token => token);
+
+        // Send push notification
+        const message = {
+            notification: {
+                title: 'Complain Created',
+                body: `Complain for ${complainData.client} has been created.`
+            },
+            tokens: deviceTokens
+        };
+        await admin.messaging().sendEachForMulticast(message);
         res.status(200).send({
             success: true,
             message: "Create Complain Successfully!",
@@ -117,9 +143,34 @@ const issuesolved = async (req, res) => {
         
         const solve_date = getFormattedLocalDateTime();
         console.log(solve_date); // This will print the current date and time in yyyy-mm-dd hh:mm:ss format
-        const {status} = req.body;
+        const {status, client, country} = req.body;
         // Update the complains with the assigned user
         const result = await query("UPDATE complains SET status = ?, solve_date = ? WHERE id = ?", [status, solve_date, complainId]);
+        const userTokensResult = await query(`
+            (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department = ? AND country = ?) 
+            UNION 
+            (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
+            [country, client]);
+        console.log("userTokensResult ", userTokensResult);
+        if (userTokensResult.length === 0) {
+            return res.status(404).send({
+                success: false,
+                message: "No users found in the specified id",
+            });
+        }
+        // Extract device tokens from the result
+        // const deviceTokens = userTokensResult.map(user => user.device_token);
+        const deviceTokens = userTokensResult.map(user => user.device_token).filter(token => token);
+
+        // Send push notification
+        const message = {
+            notification: {
+                title: 'Issue Solved',
+                body: `Issue for ${client} has been solved.`
+            },
+            tokens: deviceTokens
+        };
+        await admin.messaging().sendEachForMulticast(message);
         res.status(200).send({
             success: true,
             message: "Issue Solved Successfully!",

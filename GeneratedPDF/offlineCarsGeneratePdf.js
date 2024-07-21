@@ -22,7 +22,8 @@ function convertTo12HourFormat(dateTime) {
   // Return the date part with the formatted time
   return `${datePart} ${formattedTime}`;
 }
-const generatePDF = async (data, username) => {
+const generatePDF = async (data, username, loginType) => {
+  console.log(loginType)
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -36,17 +37,14 @@ const generatePDF = async (data, username) => {
       <td>${index + 1}</td>
       <td>${item.Vehicle_Label}</td>
       <td>${item.Client}</td>
+      ${loginType !== 'client' ? `<td>${item.IMEI}</td><td>${item.Sim_Number}</td><td>${item.Model}</td>` : ''}
       <td>${item.Installation_Date}</td>
-      <td>${item.paid_until}</td>
       <td>${item.Expiry_Datee}</td>
-      <td>${item.device_type}</td>
-      <td>${item.pend_date}</td>
-      <td>${item.periods}</td>
-      <td>${item.mon_charges}</td>
-      <td>${item.amount}</td>
-      <td>${item.vat}</td>
-      <td>${item.tamount}</td>
       <td>${item.Vehicle_Status}</td>
+      <td>${item.License_Plate_Number}</td>
+      <td>${item.Chassis_Number}</td>
+      <td>${item.last_signal}</td>
+      <td>${item.Created_By}</td>
     </tr>`).join('');
 
     const date = new Date();
@@ -69,17 +67,14 @@ const generatePDF = async (data, username) => {
         <th>Serial</th>
         <th>Vehicle</th>
         <th>Client</th>
+        ${loginType !== 'client' ? '<th>IMEI</th><th>Sim Number</th><th>Model</th>' : ''}
         <th>Installation Date</th>
-        <th>Start Date</th>
         <th>Expiry Date</th>
-        <th>Device Type</th>
-        <th>Pending Period</th>
-        <th>Period</th>
-        <th>Charges</th>
-        <th>Amount</th>
-        <th>VAT</th>
-        <th>Total Amount</th>
         <th>Status</th>
+        <th>License No</th>
+        <th>Chassis No</th>
+        <th>Last Signal</th>
+        <th>Created By</th>
       </tr>
       ${tableRows}
     </table>`);

@@ -34,19 +34,18 @@ const generatePDF = async (data, username) => {
   const tableRows = data.map((item, index) => `
     <tr>
       <td>${index + 1}</td>
-      <td>${item.Vehicle_Label}</td>
-      <td>${item.Client}</td>
+      <td>${item.Vehicle_Number}</td>
+      <td>${item.Client_Name}</td>
+      <td>${item.Subscription_Charges}</td>
+      <td>${item.payment}</td>
       <td>${item.Installation_Date}</td>
-      <td>${item.paid_until}</td>
-      <td>${item.Expiry_Datee}</td>
-      <td>${item.device_type}</td>
-      <td>${item.pend_date}</td>
+      <td>${item.Expiry_Dates}</td>
+      <td>${item.Deleted_Date}</td>
+      <td>${item.Statuss}</td>
       <td>${item.periods}</td>
-      <td>${item.mon_charges}</td>
-      <td>${item.amount}</td>
-      <td>${item.vat}</td>
-      <td>${item.tamount}</td>
-      <td>${item.Vehicle_Status}</td>
+      <td>${item.reasons}</td>
+      <td>${item.technician}</td>
+      <td>${item.Created_By}</td>
     </tr>`).join('');
 
     const date = new Date();
@@ -69,17 +68,16 @@ const generatePDF = async (data, username) => {
         <th>Serial</th>
         <th>Vehicle</th>
         <th>Client</th>
-        <th>Installation Date</th>
-        <th>Start Date</th>
-        <th>Expiry Date</th>
-        <th>Device Type</th>
-        <th>Pending Period</th>
-        <th>Period</th>
         <th>Charges</th>
-        <th>Amount</th>
-        <th>VAT</th>
-        <th>Total Amount</th>
+        <th>Payment</th>
+        <th>Installation Date</th>
+        <th>Expiry Date</th>
+        <th>Deleted Date</th>
         <th>Status</th>
+        <th>Period</th>
+        <th>Reason</th>
+        <th>Technician</th>
+        <th>Created By</th>
       </tr>
       ${tableRows}
     </table>`);

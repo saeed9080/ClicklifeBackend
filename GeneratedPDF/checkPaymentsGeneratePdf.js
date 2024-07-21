@@ -34,19 +34,15 @@ const generatePDF = async (data, username) => {
   const tableRows = data.map((item, index) => `
     <tr>
       <td>${index + 1}</td>
-      <td>${item.Vehicle_Label}</td>
-      <td>${item.Client}</td>
-      <td>${item.Installation_Date}</td>
-      <td>${item.paid_until}</td>
-      <td>${item.Expiry_Datee}</td>
-      <td>${item.device_type}</td>
-      <td>${item.pend_date}</td>
-      <td>${item.periods}</td>
-      <td>${item.mon_charges}</td>
-      <td>${item.amount}</td>
-      <td>${item.vat}</td>
-      <td>${item.tamount}</td>
-      <td>${item.Vehicle_Status}</td>
+      <td>${item.client}</td>
+      <td>${item.date}</td>
+      <td>${item.ref_no}</td>
+      <td>${item.cheque}</td>
+      <td>${item.bank}</td>
+      <td>${item.description}</td>
+      <td>${item.rec_amount}</td>
+      <td>${item.inv_amount}</td>
+      <td>${item.balance}</td>
     </tr>`).join('');
 
     const date = new Date();
@@ -67,19 +63,15 @@ const generatePDF = async (data, username) => {
     .replace('{{data}}', `<table>
       <tr>
         <th>Serial</th>
-        <th>Vehicle</th>
         <th>Client</th>
-        <th>Installation Date</th>
-        <th>Start Date</th>
-        <th>Expiry Date</th>
-        <th>Device Type</th>
-        <th>Pending Period</th>
-        <th>Period</th>
-        <th>Charges</th>
-        <th>Amount</th>
-        <th>VAT</th>
-        <th>Total Amount</th>
-        <th>Status</th>
+        <th>Date</th>
+        <th>Reference No</th>
+        <th>Cheque</th>
+        <th>Bank</th>
+        <th>Description</th>
+        <th>Receipt Amount</th>
+        <th>Invoiced Amount</th>
+        <th>Balance</th>
       </tr>
       ${tableRows}
     </table>`);

@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllOrders, createOrder, getClientData, updateOrder, deleteOrder, pickOrder, markOrder } = require("../controllers/orderController");
+const { getAllOrders, createOrder, getClientData, updateOrder, deleteOrder, pickOrder, markOrder, feedbackController, currentMonthCompletedOrders } = require("../controllers/orderController");
 
 // express router
 const router = express.Router();
@@ -17,5 +17,9 @@ router.delete("/delete-order/:orderId", deleteOrder)
 router.put("/pick-order/:orderId", pickOrder);
 // mark-order
 router.put("/mark-order/:orderId", markOrder);
+// feedback
+router.put("/feedback/:orderId", feedbackController);
+// complete-orders
+router.post("/complete-orders", currentMonthCompletedOrders);
 
 module.exports = router;
