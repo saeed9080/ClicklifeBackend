@@ -80,7 +80,6 @@ const createOrder = async (req, res) => {
             username,
             orderID
         } = req.body; // Assuming loginType is passed in the request body
-        console.log(phone)
 
         let clientName = null;
 
@@ -109,8 +108,7 @@ const createOrder = async (req, res) => {
             return formattedDateTime;
         }
         
-        const issue_date = getFormattedLocalDateTime();
-        console.log(issue_date); // This will print the current date and time in yyyy-mm-dd hh:mm:ss format
+        const issue_date = getFormattedLocalDateTime(); // This will print the current date and time in yyyy-mm-dd hh:mm:ss format
 
         // Constructing the order object with the fetched data
         const orderData = {
@@ -140,8 +138,6 @@ const createOrder = async (req, res) => {
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [country, client_for]);
         //(SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department != 'Technician') UNION (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department = 'Technician' AND country = ?) UNION (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?);
-
-        console.log("userTokensResult ", userTokensResult);
         if (userTokensResult.length === 0) {
             return res.status(404).send({
                 success: false,
@@ -170,7 +166,6 @@ const createOrder = async (req, res) => {
         const timePart = date.toLocaleTimeString('en-US', {
             hour12: false
         });
-        console.log('datePart ',datePart)
         const messageTime = `${datePart} ${timePart}`;
         const timeIn12HourFormat = convertTo12HourFormat(messageTime);
         await admin.messaging().sendEachForMulticast(message);
@@ -284,8 +279,6 @@ const pickOrder = async (req, res) => {
             selectedOrder,
         } = req.body; // Assuming userId is sent in the request body
         // Update the order with the assigned user
-        console.log(Country);
-        console.log(client_for);
         const result = await query("UPDATE orders SET technician = ?, status = ? WHERE id = ?", [technician, status, orderId]);
         // Fetch device tokens for users
         const userTokensResult = await query(`
@@ -296,8 +289,6 @@ const pickOrder = async (req, res) => {
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [Country, client_for]);
         //(SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department != 'Technician') UNION (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department = 'Technician' AND country = ?) UNION (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?);
-
-        console.log("userTokensResult ", userTokensResult);
         if (userTokensResult.length === 0) {
             return res.status(404).send({
                 success: false,
@@ -308,7 +299,6 @@ const pickOrder = async (req, res) => {
         // Extract device tokens from the result
         // const deviceTokens = userTokensResult.map(user => user.device_token);
         const deviceTokens = userTokensResult.map(user => user.device_token).filter(token => token);
-        console.log("deviceTokens ", deviceTokens);
 
         // Send push notification
         const message = {
@@ -318,7 +308,6 @@ const pickOrder = async (req, res) => {
             },
             tokens: deviceTokens
         };
-        console.log(message)
 
         const messageTitle = message.notification.title;
         const messageBody = message.notification.body;
@@ -370,7 +359,6 @@ Clicklife Customer Service`;
         // Send the request
         const response = axios.post('https://mshastra.com/sendsms_api_json.aspx', smsData)
         .then(response => {
-            console.log('Response: ',response)
             res.status(200).send({
                 success: true,
                 message: "Order proceed Successfully!",
@@ -414,8 +402,6 @@ const markOrder = async (req, res) => {
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [Country, client_for]);
         //(SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department != 'Technician') UNION (SELECT device_token FROM Users WHERE device_token IS NOT NULL AND Department = 'Technician' AND country = ?) UNION (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?);
-
-        console.log("userTokensResult ", userTokensResult);
         if (userTokensResult.length === 0) {
             return res.status(404).send({
                 success: false,
@@ -426,7 +412,6 @@ const markOrder = async (req, res) => {
         // Extract device tokens from the result
         // const deviceTokens = userTokensResult.map(user => user.device_token);
         const deviceTokens = userTokensResult.map(user => user.device_token).filter(token => token);
-        console.log("deviceTokens ", deviceTokens);
 
         // Send push notification
         const message = {
@@ -488,7 +473,6 @@ Clicklife Customer Service`;
         // Send the request
         const response = axios.post('https://mshastra.com/sendsms_api_json.aspx', smsData)
         .then(response => {
-            console.log('Response: ',response)
             res.status(200).send({
                 success: true,
                 message: "Order Marked Successfully!",
@@ -538,7 +522,6 @@ const currentMonthCompletedOrders = async (req,res) => {
     try {
         const {username} = req.body;
         const result = await query(`SELECT COUNT(*) AS count FROM orders WHERE technician = ? AND status = 2 AND MONTH(solve_date) = MONTH(CURRENT_DATE()) AND YEAR(solve_date) = YEAR(CURRENT_DATE())`, [username]);
-        console.log(result)
         res.status(200).send({
             success: true,
             message: "All completed orders that complete in current month!",

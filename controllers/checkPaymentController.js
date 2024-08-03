@@ -29,7 +29,6 @@ const getAllPayments = async (req, res) => {
 const searchController = async (req, res) => {
     try {
         const { client, ref_no , loginType} = req.body;
-        console.log(loginType)
 
         let sql;
         if (loginType === 'client') {

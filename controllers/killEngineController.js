@@ -33,10 +33,6 @@ const searchController = async (req, res) => {
             IMEI,
             Sim_Number
         } = req.body;
-        console.log('Vehicle_Label:', Vehicle_Label);
-        console.log('Client:', Client);
-        console.log('IMEI:', IMEI);
-        console.log('Sim_Number:', Sim_Number);
 
         let sql = `SELECT * FROM vehicle WHERE Vehicle_Label LIKE '%${Vehicle_Label}%' OR Client LIKE '%${Client}%' OR IMEI LIKE '%${IMEI}%' OR Sim_Number LIKE '%${Sim_Number}%'`;
         const results = await query(sql);
@@ -62,8 +58,6 @@ const engineOnSendMessage = async (req, res) => {
             Vehicle_Label,
             Client
         } = req.body;
-        console.log(model)
-        console.log(phone)
         const smsCommandsQuery = `SELECT * FROM sms_commands`;
         const smscommandsresult = await query(smsCommandsQuery);
         let smsmessage = '';
@@ -156,7 +150,6 @@ const engineOnSendMessage = async (req, res) => {
             // Send the request
             axios.post('https://mshastra.com/sendsms_api_json.aspx', smsData)
                 .then(response => {
-                    console.log('Response: ', response.data);
                     res.status(200).send({
                         success: true,
                         response: response.data,
@@ -187,7 +180,6 @@ const engineOffSendMessage = async (req, res) => {
             Vehicle_Label,
             Client
         } = req.body;
-        console.log(model)
         const smsCommandsQuery = `SELECT * FROM sms_commands`;
         const smscommandsresult = await query(smsCommandsQuery);
         let smsmessage = '';
@@ -280,7 +272,6 @@ const engineOffSendMessage = async (req, res) => {
             // Send the request
             axios.post('https://mshastra.com/sendsms_api_json.aspx', smsData)
                 .then(response => {
-                    console.log('Response: ', response.data);
                     res.status(200).send({
                         success: true,
                         response: response.data,

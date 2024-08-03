@@ -7,7 +7,6 @@ const getAllSales = async (req, res) => {
         const { limit = 10, offset = 0 } = req.query;
         const salesresults = await query('SELECT * FROM sales');
         const result = await query(`SELECT * FROM sales LIMIT ${limit} OFFSET ${offset}`);
-        console.log('simcardfinance result length:', result.length);
         res.status(200).send({ 
             success: true,
             result,
@@ -26,12 +25,10 @@ const getAllSales = async (req, res) => {
 const searchController = async (req, res) => {
     try {
         const { name } = req.body;
-        console.log('Name:', name);
+
         // Search sales by name
         let sql = `SELECT * FROM sales WHERE name LIKE '%${name}%'`;
         const result = await query(sql);
-
-        console.log('results:', result.length);
         res.status(200).json({
             success: true,
             message: "Search results",

@@ -68,8 +68,7 @@ const createComplain = async (req, res) => {
             return formattedDateTime;
         }
         
-        const issue_date = getFormattedLocalDateTime();
-        console.log(issue_date); // This will print the current date and time in yyyy-mm-dd hh:mm:ss format
+        const issue_date = getFormattedLocalDateTime(); // This will print the current date and time in yyyy-mm-dd hh:mm:ss format
 
         // Constructing the order object with the fetched data
         const complainData = {
@@ -89,7 +88,6 @@ const createComplain = async (req, res) => {
             UNION 
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [dep_name, country, client]);
-        console.log("userTokensResult ", userTokensResult);
         if (userTokensResult.length === 0) {
             return res.status(404).send({
                 success: false,
@@ -141,8 +139,7 @@ const issuesolved = async (req, res) => {
             return formattedDateTime;
         }
         
-        const solve_date = getFormattedLocalDateTime();
-        console.log(solve_date); // This will print the current date and time in yyyy-mm-dd hh:mm:ss format
+        const solve_date = getFormattedLocalDateTime();// This will print the current date and time in yyyy-mm-dd hh:mm:ss format
         const {status, client, country} = req.body;
         // Update the complains with the assigned user
         const result = await query("UPDATE complains SET status = ?, solve_date = ? WHERE id = ?", [status, solve_date, complainId]);
@@ -151,7 +148,6 @@ const issuesolved = async (req, res) => {
             UNION 
             (SELECT device_token FROM client WHERE device_token IS NOT NULL AND Namee = ?)`,
             [country, client]);
-        console.log("userTokensResult ", userTokensResult);
         if (userTokensResult.length === 0) {
             return res.status(404).send({
                 success: false,
@@ -188,7 +184,6 @@ const issuesolved = async (req, res) => {
 const updateComplain = async (req, res) => {
     try {
         const complainId = req.params.complainId;
-        console.log(complainId)
         const updatedComplainData = req.body; // Get updated complain data from request body
         const result = await query("UPDATE complains SET ? WHERE id = ?", [updatedComplainData, complainId]);
         res.status(200).send({

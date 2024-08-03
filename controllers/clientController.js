@@ -91,7 +91,6 @@ const createClient = async (req, res) => {
 const updateClient = async (req, res) => {
     try {
         const clientId = req.params.clientId;
-        console.log(clientId)
         const updatedClientData = req.body; // Get updated client data from request body
         const result = await query("UPDATE client SET ? WHERE id = ?", [updatedClientData, clientId]);
         res.status(200).send({

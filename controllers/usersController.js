@@ -18,7 +18,6 @@ const adminLoginController = async (req, res) => {
         }
         const q = "SELECT * FROM Users WHERE email = ? AND password = ?";
         const results = await query(q, [email, password]);
-        console.log(results)
         if (results.length > 0) {
             const user = results[0];
             const userId = results[0].id;
@@ -180,8 +179,6 @@ const clientLoginController = async (req, res) => {
             loginType,
             DeviceToken
         } = req.body;
-        console.log("Email ", Email)
-        console.log("password ", password)
         // validation
         if (!Email || !password) {
             return res.status(400).json({
@@ -191,7 +188,6 @@ const clientLoginController = async (req, res) => {
         }
         const q = "SELECT * FROM client WHERE Email = ? AND password = ?";
         const results = await query(q, [Email, password]);
-        console.log("Results ", results)
         if (results.length > 0) {
             const user = results[0];
             const userId = results[0].id;
@@ -255,7 +251,6 @@ const clientLoginController = async (req, res) => {
 };
 
 const getUserFromDatabase = async(userId, loginType) => {
-    console.log(loginType)
     try {
         let result;
         if(loginType === 'admin' || loginType === 'staff'){
@@ -331,21 +326,17 @@ const logoutController = async (req, res) => {
 const updateUserController = async (req, res) => {
     try {
         const userId = req.params.id;
-        console.log("userId ", userId);
         const {trade_name,auth_person,auth_phone,city,website,password,address,Phone,email,country,loginType} = req.body;
         let sql;
         let params;
         let img;
         const baseURL = `${req.protocol}://${req.get('host')}/uploads/`; // Construct the base URL
-        console.log(baseURL)
 
         if (req.file) {
             img = baseURL + req.file.filename; // Save the full URL
         } else {
             img = req.body.img; // Use the existing image URL if no new image is uploaded
         }
-        console.log('req.file: ', req.file);
-        console.log('req.body.img: ', req.body.img);
         if (loginType === 'client') {
             sql = "UPDATE client SET trade_name = ?, auth_person = ?, auth_phone = ?, city = ?, website = ?, password = ?, address = ?, Phone = ?, img = ? WHERE id = ?";
             params = [trade_name, auth_person, auth_phone, city, website, password, address, Phone, img, userId];
@@ -353,11 +344,7 @@ const updateUserController = async (req, res) => {
             sql = "UPDATE Users SET email = ?, password = ?, img = ?, country = ? WHERE id = ?";
             params = [email, password, img, country, userId];
         }
-        console.log('SQL: ', sql);
-        console.log('Params: ', params);
-        console.log('Image: ', img);
         const results = await query(sql, params);
-        console.log('Results: ', results);
         if (results.affectedRows > 0) {
             return res.status(200).send({
                 success: true,

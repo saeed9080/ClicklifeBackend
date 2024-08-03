@@ -8,7 +8,6 @@ const getAllSimCardFinance = async (req, res) => {
         const vehicleSim_Number = await query("SELECT Sim_Number FROM vehicle");
         const simcardfinanceresults = await query('SELECT * FROM SimCardFinance');
         const result = await query(`SELECT * FROM SimCardFinance LIMIT ${limit} OFFSET ${offset}`);
-        console.log('simcardfinance result length:', result.length);
         const vehicleSimNumbers = vehicleSim_Number.map(vehicle => vehicle.Sim_Number);
         const simcardfinanceWithStatus = simcardfinanceresults.map(simcardfinance => ({
             ...simcardfinance,
@@ -38,8 +37,6 @@ const getAllSimCardFinance = async (req, res) => {
 const searchController = async (req, res) => {
     try {
         const { sim, sim2 } = req.body;
-        console.log('Sim Number:', sim);
-        console.log('Sim Number 2:', sim2);
 
         // Fetch vehicle Sim_Numbers
         const vehicleSim_NumberResults = await query("SELECT Sim_Number FROM vehicle");
@@ -54,8 +51,6 @@ const searchController = async (req, res) => {
             ...simcardfinance,
             status: vehicleSimNumbers.includes(simcardfinance.sim) ? 'Installed' : 'Not Installed'
         }));
-
-        console.log('results with status:', resultsWithStatus.length);
         res.status(200).json({
             success: true,
             message: "Search results",

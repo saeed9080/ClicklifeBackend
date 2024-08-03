@@ -10,7 +10,6 @@ const getAllVehicles = async (req, res) => {
         const { limit = 10, offset = 0 } = req.query;
         const vehiclesresults = await query('SELECT * FROM vehicle');
         const result = await query(`SELECT DISTINCT v.*, d.device_type FROM vehicle v LEFT JOIN devices d ON v.IMEI = d.IMEI LIMIT ${limit} OFFSET ${offset}`);
-        console.log('vehicle result length:', result);
         res.status(200).send({ 
             success: true,
             result,
@@ -46,10 +45,6 @@ const getClientData = async (req, res) => {
 const searchController = async (req, res) => {
     try {
         const { Vehicle_Label, Client, IMEI, Sim_Number } = req.body;
-        console.log('Vehicle_Label:', Vehicle_Label);
-        console.log('Client:', Client);
-        console.log('IMEI:', IMEI);
-        console.log('Sim_Number:', Sim_Number);
 
         let sql = `SELECT * FROM vehicle WHERE Vehicle_Label LIKE '%${Vehicle_Label}%' OR Client LIKE '%${Client}%' OR IMEI LIKE '%${IMEI}%' OR Sim_Number LIKE '%${Sim_Number}%'`;
         const results = await query(sql);
@@ -112,7 +107,6 @@ const unPaidVehiclesController = async (req, res) => {
     try {
         const {username} = req.body;
         const result = await query(`SELECT COUNT(*) FROM vehicle WHERE Expiry_Datee < CURDATE() AND Client = ?`, [username]);
-        console.log(result)
         res.status(200).send({
             success: true,
             message: "All unpaid vehicles!",
@@ -132,7 +126,6 @@ const paidVehiclesController = async (req, res) => {
     try {
         const {username} = req.body;
         const result = await query(`SELECT COUNT(*) FROM vehicle WHERE Expiry_Datee > CURDATE() AND Client = ?`, [username]);
-        console.log(result)
         res.status(200).send({
             success: true,
             message: "All paid vehicles!",

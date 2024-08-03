@@ -23,7 +23,6 @@ function convertTo12HourFormat(dateTime) {
   return `${datePart} ${formattedTime}`;
 }
 const generatePDF = async (data, username, loginType) => {
-  console.log(loginType)
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -37,7 +36,6 @@ const generatePDF = async (data, username, loginType) => {
       <td>${index + 1}</td>
       <td>${item.Vehicle_Label}</td>
       <td>${item.Client}</td>
-      ${loginType !== 'client' ? `<td>${item.IMEI}</td><td>${item.Sim_Number}</td><td>${item.Model}</td>` : ''}
       <td>${item.Installation_Date}</td>
       <td>${item.Expiry_Datee}</td>
       <td>${item.Vehicle_Status}</td>
@@ -67,7 +65,6 @@ const generatePDF = async (data, username, loginType) => {
         <th>Serial</th>
         <th>Vehicle</th>
         <th>Client</th>
-        ${loginType !== 'client' ? '<th>IMEI</th><th>Sim Number</th><th>Model</th>' : ''}
         <th>Installation Date</th>
         <th>Expiry Date</th>
         <th>Status</th>

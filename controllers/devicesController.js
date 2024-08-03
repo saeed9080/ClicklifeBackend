@@ -8,7 +8,6 @@ const getAllDevices = async (req, res) => {
         const vehicleIMEI = await query("SELECT IMEI FROM vehicle");
         const devicesresults = await query('SELECT * FROM devices');
         const result = await query(`SELECT * FROM devices LIMIT ${limit} OFFSET ${offset}`);
-        console.log('devices result length:', result.length);
         const vehicleIMEIs = vehicleIMEI.map(vehicle => vehicle.IMEI);
         const devicesWithStatus = devicesresults.map(device => ({
             ...device,
@@ -38,7 +37,6 @@ const getAllDevices = async (req, res) => {
 const searchController = async (req, res) => {
     try {
         const { IMEI } = req.body;
-        console.log('IMEI:', IMEI);
 
         // Fetch vehicle IMEIs
         const vehicleIMEIResults = await query("SELECT IMEI FROM vehicle");
@@ -53,8 +51,6 @@ const searchController = async (req, res) => {
             ...device,
             status: vehicleIMEIs.includes(device.IMEI) ? 'Installed' : 'Not Installed'
         }));
-
-        console.log('results with status:', resultsWithStatus.length);
         res.status(200).json({
             success: true,
             message: "Search results",

@@ -23,7 +23,6 @@ const getAllSMSCommands = async (req, res) => {
 const updateSMSCommands = async (req, res) => {
     try {
         const smscommandId = req.params.smscommandId;
-        console.log(smscommandId)
         const {on_val, off_val} = req.body; // Get updated client data from request body
         const result = await query("UPDATE sms_commands SET on_val = ?, off_val = ? WHERE id = ?", [on_val, off_val, smscommandId]);
         res.status(200).send({

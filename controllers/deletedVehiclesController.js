@@ -26,8 +26,6 @@ const getAllDeletedVehicles = async (req, res) => {
 const searchController = async (req, res) => {
     try {
         const { Vehicle_Number, Client_Name } = req.body;
-        console.log('Vehicle_Number:', Vehicle_Number);
-        console.log('Client_Name:', Client_Name);
 
         let sql = `SELECT * FROM deleted_vehicle WHERE Vehicle_Number LIKE '%${Vehicle_Number}%' OR Client_Name LIKE '%${Client_Name}%'`;
 
